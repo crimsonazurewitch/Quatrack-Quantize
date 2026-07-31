@@ -1,5 +1,5 @@
 function love.conf(t)
-    local identity='Quatrack'
+    local identity='Quatrack-QUANTIZE'
     local mobile=love._os=='Android' or love._os=='iOS'
     local msaa=4
     local portrait=false
@@ -50,7 +50,7 @@ function love.conf(t)
         W.width,W.height=1280,720
         W.minwidth,W.minheight=640,360
     end
-    W.title="Quatrack "..require"version".string
+    W.title="Quatrack QUANTIZE "..require"version".string
 
     if fs.getInfo('assets/image/icon.png') then
         W.icon='assets/image/icon.png'

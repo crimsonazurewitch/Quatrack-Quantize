@@ -37,6 +37,7 @@ mapTemplate={
     mapAuth='[mapAuth]',
     scriptAuth='[scriptAuth]',
     mapDifficulty='[mapDifficulty]',
+    mapPack='[mapPack]',
 
     songFile="[songFile]",
     songImage=false,
@@ -112,11 +113,11 @@ hitColors={
 hitTexts={
     [-1]="MISS",
     [0]="BAD",
-    'WELL',
     'GOOD',
+    'GREAT',
+    'MARV',
     'PERF',
-    'PREC',
-    'MARV'
+    'QUAN'
 }
 chainColors={
     [0]=COLOR.lD,
@@ -135,6 +136,7 @@ rankColors={
     COLOR.dV,
     COLOR.dW,
     COLOR.lD,
+    COLOR.dD
 } for i=1,#rankColors do rankColors[i]={.3+rankColors[i][1]*.7,.3+rankColors[i][2]*.7,.3+rankColors[i][3]*.7} end
 defaultTrackNames={
     {'C'},
@@ -200,11 +202,11 @@ do-- Userdata tables
         hits={
             miss=0,
             bad=0,
-            well=0,
             good=0,
-            perf=0,
-            prec=0,
+            great=0,
             marv=0,
+            perc=0,
+            perf=0,
         },
         item=setmetatable({},{__index=function(self,k)
             self[k]=0

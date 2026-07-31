@@ -110,11 +110,11 @@ local function _tryGoResult()
         hits={
             miss=game.hits[-1],
             bad=game.hits[0],
-            well=game.hits[1],
-            good=game.hits[2],
-            perf=game.hits[3],
-            prec=game.hits[4],
-            marv=game.hits[5],
+            good=game.hits[1],
+            great=game.hits[2],
+            marv=game.hits[3],
+            perc=game.hits[4],
+            perf=game.hits[5],
         },
         bestChain=game.bestChain,
     })
@@ -164,8 +164,8 @@ function scene.load()
     game.playSpeed=1
     if not autoPlayTextObj then autoPlayTextObj=gc.newText(FONT.get(100),'AUTO') end
 
-    game.judgeTimes={.16,.12,.08,.05,.03,0}
-    game.accPoints={-100,0,75,100,101}
+    game.judgeTimes={.16,.12,.08,.04,.02,0}
+    game.accPoints={0,5,75,100,101}
 
     game.map=SCN.args[1]
 
@@ -699,19 +699,19 @@ function scene.draw()
     -- Draw hit text
     if love.timer.getTime()-game.hitTextTime<.26 and game.hitLV<=SET.showHitLV then
         local c=hitColors[game.hitLV]
-        setFont(80,'mono')
+        setFont(40,'mono')
         gc_setColor(c[1],c[2],c[3],2.6-(love.timer.getTime()-game.hitTextTime)*10)
-        mStr(hitTexts[game.hitLV],0,-115)
+        mStr(hitTexts[game.hitLV],0,-75)
     end
 
     -- Draw combo
     if game.combo>0 then
-        setFont(50,'mono')
+        setFont(30,'mono')
         if game.bestChain==5 then
             SCC[3]=(1-game.time/game.songLength)^.26
-            GC.strokePrint('full',1,chainColors[game.bestChain],SCC,game.combo,0,0,nil,'center')
+            GC.strokePrint('full',1,chainColors[game.bestChain],SCC,game.combo,0,10,nil,'center')
         else
-            GC.strokePrint('full',1,chainColors[game.bestChain],COLOR.L,game.combo,0,0,nil,'center')
+            GC.strokePrint('full',1,chainColors[game.bestChain],COLOR.L,game.combo,0,10,nil,'center')
         end
     end
 

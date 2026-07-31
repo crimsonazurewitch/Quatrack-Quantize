@@ -19,11 +19,11 @@ function scene.load()
         hits={
             miss=4,
             bad=4,
-            well=4,
-            good=62,
-            perf=62,
-            prec=62,
+            good=4,
+            great=62,
             marv=62,
+            perc=62,
+            perf=62,
         },
         bestChain=math.random(5),
     }
@@ -35,22 +35,15 @@ function scene.load()
     -- Rank
     local acc=tonumber(results.accText:sub(1,-2))
     local rankClr,rankStr
-    if     acc==101   then rankClr,rankStr=rankColors[1],'X '
-    elseif acc>=100.5 then rankClr,rankStr=rankColors[2],'U+'
-    elseif acc>=100   then rankClr,rankStr=rankColors[2],'U '
-    elseif acc>=99.5  then rankClr,rankStr=rankColors[3],'S+'
-    elseif acc>=99    then rankClr,rankStr=rankColors[3],'S '
-    elseif acc>=98    then rankClr,rankStr=rankColors[4],'A+'
-    elseif acc>=97    then rankClr,rankStr=rankColors[4],'A '
-    elseif acc>=94    then rankClr,rankStr=rankColors[5],'B+'
-    elseif acc>=90    then rankClr,rankStr=rankColors[5],'B '
-    elseif acc>=85    then rankClr,rankStr=rankColors[6],'C+'
-    elseif acc>=80    then rankClr,rankStr=rankColors[6],'C '
-    elseif acc>=75    then rankClr,rankStr=rankColors[7],'D+'
-    elseif acc>=70    then rankClr,rankStr=rankColors[7],'D '
-    elseif acc>=65    then rankClr,rankStr=rankColors[8],'E+'
-    elseif acc>=60    then rankClr,rankStr=rankColors[8],'E '
-    else                   rankClr,rankStr=rankColors[8],'F '
+    if     acc==101   then rankClr,rankStr=rankColors[1],'QT'
+    elseif acc>=100   then rankClr,rankStr=rankColors[2],'Q'
+    elseif acc>=99    then rankClr,rankStr=rankColors[3],'S+'
+    elseif acc>=98    then rankClr,rankStr=rankColors[4],'S'
+    elseif acc>=95    then rankClr,rankStr=rankColors[5],'A '
+    elseif acc>=90    then rankClr,rankStr=rankColors[6],'B '
+    elseif acc>=80    then rankClr,rankStr=rankColors[7],'C '
+    elseif acc>=70    then rankClr,rankStr=rankColors[8],'D '
+    else                   rankClr,rankStr=rankColors[9],'F '
     end
     results.rankClr=rankClr
     results.rankText1=GC.newText(FONT.get(100,'mono'),rankStr:sub(1,1))
