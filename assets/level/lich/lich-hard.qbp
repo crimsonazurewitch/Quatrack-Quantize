@@ -1,0 +1,16 @@
+$version=1.0
+$mapName=lich
+$musicAuth=Tyron
+$mapAuth=Charter
+$mapDifficulty=HARD-1
+$songFile=lich.ogg
+$songOffset=-90ms
+$songImage=lich.jpg
+$tracks=4
+$realTracks=4
+
+----
+OOOO
+----
+
+>start

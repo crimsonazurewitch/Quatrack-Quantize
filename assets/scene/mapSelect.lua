@@ -71,7 +71,7 @@ local function _freshSongList()
                             dText:sub(1,4):lower()=='norm' and 1000 or
                             dText:sub(1,4):lower()=='hard' and 2000 or
                             dText:sub(1,4):lower()=='luna' and 3000 or
-                            dText:sub(1,4):lower()=='over' and 4000 or
+                            dText:sub(1,4):lower()=='snva' and 4000 or
                             5000)+
                             (metaData.mapDifficulty:match('%d+$') or 999)
                         )
@@ -83,11 +83,11 @@ local function _freshSongList()
                             mapAuth=GC.newText(FONT.get(30),metaData.mapAuth),
                             difficulty=GC.newText(FONT.get(25),dText),
                             difficultyColor=
-                                dText:sub(1,4)=='Easy' and COLOR.lG or
-                                dText:sub(1,4)=='Norm' and COLOR.lY or
-                                dText:sub(1,4)=='Hard' and COLOR.lR or
-                                dText:sub(1,4)=='Luna' and COLOR.lM or
-                                dText:sub(1,4)=='Over' and COLOR.dL or
+                                dText:sub(1,4)=='EASY' and COLOR.lG or
+                                dText:sub(1,4)=='NORM' and COLOR.lY or
+                                dText:sub(1,4)=='HARD' and COLOR.lR or
+                                dText:sub(1,4)=='LUNA' and COLOR.lM or
+                                dText:sub(1,4)=='SNVA' and COLOR.dL or
                                 COLOR.T,
                             tracks=metaData.realTracks and metaData.realTracks~=metaData.tracks and (('$1($2)'):repD(metaData.realTracks,metaData.tracks)) or metaData.tracks,
                             sortStr_difficulty=(source=='outside' and '0' or '1')..(metaData.realTracks or metaData.tracks)..difficultyNum..metaData.mapName,
