@@ -37,7 +37,6 @@ mapTemplate={
     mapAuth='[mapAuth]',
     scriptAuth='[scriptAuth]',
     mapDifficulty='[mapDifficulty]',
-    mapPack='[mapPack]',
 
     songFile="[songFile]",
     songImage=false,
