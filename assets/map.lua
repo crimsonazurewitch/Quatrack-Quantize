@@ -745,6 +745,7 @@ function Map.new(file)
                     time=curTime,
                     args=t,
                 }
+            
             else
                 _syntaxCheck(false,"Invalid line type: "..code)
             end

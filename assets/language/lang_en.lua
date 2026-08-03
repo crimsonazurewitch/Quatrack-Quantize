@@ -26,7 +26,7 @@ return{
         "NO BREAK+",
         "ALL PERFECT",
         "ALL PERFECT+",
-        "MARVELOUS",
+        "QUANTIZED!!",
     },
 
     loadError_errorMode="'$1' loading failed: no load mode '$2'",

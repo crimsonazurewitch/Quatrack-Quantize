@@ -48,6 +48,11 @@ local game={
     hitLV=nil,-- Hit level (-1~5)
     hitTextTime=nil,-- Time stamp, for hitText fading-out animation
 
+    health=nil,
+    healthDrain=nil,
+    healthGain=nil,
+    healthUpLimit=nil,
+
     safeAreaTimer=nil,
     time=nil,
     isSongPlaying=nil,
@@ -120,6 +125,28 @@ local function _tryGoResult()
     })
 end
 
+local function _tryFailResult()
+    if game.needSaveSetting then saveSettings() end
+    applyClickFX(SET.clickFX)
+    SCN.swapTo('result',nil,{
+        map=game.map,
+        score=game.score0,
+        maxCombo=game.maxCombo,
+        accText=game.accText,
+        averageDeviate=("%.2fms"):format(game.hitCount>0 and game.totalDeviateTime/game.hitCount*1000 or 0),
+        hits={
+            miss=game.hits[-1],
+            bad=game.hits[0],
+            good=game.hits[1],
+            great=game.hits[2],
+            marv=game.hits[3],
+            perc=game.hits[4],
+            perf=game.hits[5],
+        },
+        bestChain=game.bestChain,
+    })
+end
+
 local settingArgs=setmetatable({},{__newindex=function() error("setting.xxx is read only") end})
 local gameArgs=setmetatable({},{__newindex=function() error("game.xxx is read only") end})
 local function _freshScriptArgs()
@@ -166,6 +193,7 @@ function scene.load()
 
     game.judgeTimes={.16,.12,.08,.04,.02,0}
     game.accPoints={0,5,75,100,101}
+    game.healthGain={0,0,0.5,1,2}
 
     game.map=SCN.args[1]
 
@@ -184,6 +212,7 @@ function scene.load()
     game.hitOffests={}
     game.curAcc,game.fullAcc=0,0
     _updateAcc()
+    game.healthUpLimit,game.health,game.healthDrain=100,100,10
     game.combo,game.maxCombo,game.score,game.score0=0,0,0,0
     game.hitCount,game.totalDeviateTime=0,0
     for i=-1,5 do game.hits[i]=0 end
@@ -314,6 +343,9 @@ local function _trigNote(deviateTime,noTailHold,weak)
     if noTailHold and (game.hitLV>0 or game.hitLV==0 and weak) then game.hitLV=5 end
     game.bestChain=min(game.bestChain,game.hitLV)
     game.hits[game.hitLV]=game.hits[game.hitLV]+1
+    game.health=game.health+((game.hitLV==0 and 0) or game.healthGain[game.hitLV])
+    
+
     if game.hitLV>0 then
         game.curAcc=game.curAcc+game.accPoints[game.hitLV]
         game.score0=game.score0+floor(game.hitLV*(10000+game.combo)^.5)
@@ -628,12 +660,24 @@ function scene.update(dt)
             game.hitLV=-1
             game.fullAcc=game.fullAcc+100*missCount
             _updateAcc()
+            game.health=game.health-game.healthDrain
             if game.combo>=10 then SFX.play('combobreak') end
             game.combo=0
             game.bestChain=0
             game.hits[-1]=game.hits[-1]+missCount
+            
         end
     end
+
+    -- Gauge Limits
+    if game.health<0 then 
+        game.health=0
+    elseif game.health>game.healthUpLimit then
+        game.health=game.healthUpLimit
+    end
+
+    -- Fail the chart (ATTEMPT)
+    if game.health<=0 then _tryFailResult() end
 
     -- Update displaying score
     if game.score<game.score0 then
@@ -725,6 +769,10 @@ function scene.draw()
         gc_rectangle('fill',-d1*688,-10,(d1-d2)*688,4)
         gc_rectangle('fill',d1*688, -10,(d2-d1)*688,4)
     end
+
+    -- Draw health gauge
+    gc_setColor(1,.5,.5)
+    gc_rectangle('fill', -110, 30, 2.2*game.health, 6)
 
     -- Draw time
     if game.time>0 then
