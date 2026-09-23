@@ -47,6 +47,7 @@ local codeMarks={-- Attention, [1] is lua regex, not raw string
     {'^%|',      '/set_note_need:'},
     -- /set_judge:
     -- /set_acc_points:
+    -- /set_heal:
 }
 function Map.new(file)
     local o=TABLE.copyAll(mapTemplate)
@@ -745,6 +746,22 @@ function Map.new(file)
                     time=curTime,
                     args=t,
                 }
+            elseif code=='set_heal' then-- Set gauge heal
+                local t=str:split(',')
+                _syntaxCheck(#t==6,"Value Err")
+                for i=1,6 do
+                    t[i]=tonumber(t[i])
+                    _syntaxCheck(t[i] and t[i]%1==0,"Int Err")
+                end
+                for i=1,5 do
+                    _syntaxCheck(t[i]>=t[i+1],"Descend Err")
+                end
+                t[1],t[2],t[3],t[4],t[5],t[6]=t[6],t[5],t[4],t[3],t[2],t[1]
+                o.eventQueue:insert{
+                    type='setHeal',
+                    time=curTime,
+                    args=t,
+                }
             
             else
                 _syntaxCheck(false,"Invalid line type: "..code)
@@ -772,7 +789,7 @@ function Map.new(file)
                                 yOffset=noteState.yOffset[curTrack],
                             }
                             o.noteQueue:insert(b)
-                            lastNote[curTrack]=b
+                            lastNote[curTrack]=b                                
                         elseif c=='U' then-- Hold note start
                             _syntaxCheck(not lastLongBar[curTrack],"Cannot start a long bar in a long bar")
                             local b={
@@ -799,6 +816,19 @@ function Map.new(file)
                             lastLongBar[curTrack].etime=curTime
                             lastLongBar[curTrack].tail=c=='A'
                             lastLongBar[curTrack]=false
+                        elseif c=='M' then
+                            local b={
+                                type='mine',
+                                time=curTime,
+                                track=trackDir[curTrack],
+                                available=trackAvailable[trackDir[curTrack]],
+                                color=noteState.color[curTrack],
+                                alpha=noteState.alpha[curTrack],
+                                xOffset=noteState.xOffset[curTrack],
+                                yOffset=noteState.yOffset[curTrack],
+                            }
+                            o.noteQueue:insert(b)
+                            lastNote[curTrack]=b
                         else
                             _syntaxCheck(curTrack==curNotePerLine+1,"Too few notes in one line")
                             readState='rnd'

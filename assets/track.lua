@@ -185,6 +185,7 @@ function Track:pollNote(noteType)
                 return i,l[i]
             end
         end
+    elseif noteType=='note' then
     elseif noteType=='hold' then
         for i=1,#l do
             if
@@ -367,6 +368,11 @@ function Track:updateLogic(time)
                 rem(self.notes,i)
                 missCount=missCount+1
             end
+        elseif note.type=='mine' then
+            if self.time>note.time+note.lostTime then
+                rem(self.notes,i)
+                missCount=missCount+3
+            end
         elseif note.type=='hold' then
             if note.head then-- Hold not pressed, miss whole when head missed
                 if note.active and self.time>note.time+note.lostTime then
@@ -504,6 +510,9 @@ function Track:draw(map)
                 if chordAlpha and note.chordCount>1 then
                     _drawChordBox(self.chordColor[note.chordCount-1],chordAlpha*a,trackW,headH,thick)
                 end
+                gc_setColor(r,g,b,a)
+                gc_rectangle('fill',-trackW,-headH,2*trackW,-thick)
+            elseif note.type=='mine' then
                 gc_setColor(r,g,b,a)
                 gc_rectangle('fill',-trackW,-headH,2*trackW,-thick)
             elseif note.type=='hold' then

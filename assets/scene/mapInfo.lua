@@ -100,21 +100,6 @@ local function _freshSongList()
     end
     _updateListBox()
 end
-local sortSelector=WIDGET.new{type='selector',pos={.5,1},x=240,y=-100,w=240,text=LANG'mapSelect_sortMode',
-    labelPos='bottom',
-    labelDist=30,
-    list={'difficulty','name'},
-    fontSize=20,
-    selFontSize=35,
-    disp=function() return sortMode end,
-    show=function(v)
-        return Text and Text.mapSelect_sortModes[v]
-    end,
-    code=function(v)
-        sortMode=v
-        _updateListBox()
-    end
-}
 
 function scene.load()
     if not mapLoaded then _freshSongList() end
@@ -165,42 +150,6 @@ end
 
 scene.widgetList={
     listBox,
-    WIDGET.new{type='button_fill',pos={0,1},x=160,y=-80,w=200,h=80,text=CHAR.icon.download,color='lV',fontSize=60,
-        onClick=function()
-            if not MOBILE then
-                love.system.openURL(love.filesystem.getSaveDirectory()..'/songs')
-            else
-                MSG('info',love.filesystem.getSaveDirectory())
-            end
-        end
-    },
-    WIDGET.new{
-        type='button_fill',
-        pos={0,1},
-        x=320,y=-80,w=80,
-        text=CHAR.icon.retry,color='lB',
-        fontSize=50,
-        onClick=_freshSongList,visibleFunc=function() return love.timer.getTime()-lastFreshTime>2.6 end
-    },
-    WIDGET.new{
-        type='button_fill',
-        pos={.5,1},
-        y=-80,w=140,h=80,
-        text=CHAR.icon.play,
-        color='lG',
-        fontSize=60,
-        onClick=WIDGET.c_pressKey'return'
-    },
-    sortSelector,
-    WIDGET.new{
-        type='button_fill',
-        pos={.5,1},
-        x=-180,y=-80,w=80,
-        text=CHAR.icon.menu,
-        color='lI',
-        fontSize=60,
-        onClick=WIDGET.c_goScn('mapInfo')
-    },
     WIDGET.new{
         type='button_fill',
         pos={1,1},

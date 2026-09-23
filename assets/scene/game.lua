@@ -619,6 +619,10 @@ function scene.update(dt)
             for i=1,5 do
                 game.accPoints[i]=n.args[i]
             end
+        elseif n.type=='setHeal' then
+            for i=1,5 do
+                game.healthGain[i]=n.args[i]
+            end
         end
     end
 
