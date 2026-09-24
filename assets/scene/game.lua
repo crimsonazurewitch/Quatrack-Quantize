@@ -48,10 +48,22 @@ local game={
     hitLV=nil,-- Hit level (-1~5)
     hitTextTime=nil,-- Time stamp, for hitText fading-out animation
 
-    health=nil,
-    healthDrain=nil,
-    healthGain=nil,
-    healthUpLimit=nil,
+    health=nil, -- Default HP amount
+    healthLoss=nil, -- Default HP Loss
+    healthGain=nil, -- Default HP Gain
+    healthUpLimit=nil, -- Default maximum HP cap
+    healthFatalis=nil, -- Default minimum HP cap 
+
+    gaugeN=true, -- No Gauge
+    gaugeC=false, -- Clear (Not Implemented)
+    gaugeS=false, -- Standard
+
+    hpDrain=false, -- Drain (Not Implemented)
+    hpFatal=false, -- "Fatalis" (Extremely Bare)
+    hpNoMiss=false, -- One Shot
+    hpAcc=false, -- Hex (Acc) (Broken)
+    hpOver=false, -- Overcast (Not Implemented)
+
 
     safeAreaTimer=nil,
     time=nil,
@@ -64,6 +76,7 @@ local game={
     maxCombo=nil,
     score=nil,
     score0=nil,
+    --maxScore=nil,
     hitCount=nil,
     totalDeviateTime=nil,
     bestChain=nil,
@@ -193,7 +206,7 @@ function scene.load()
 
     game.judgeTimes={.16,.12,.08,.04,.02,0}
     game.accPoints={0,5,75,100,101}
-    game.healthGain={0,0,0.5,1,2}
+    game.healthGain=(game.hpAcc and {-10,-5,-1,0,2}) or {0,0,0.5,1,2}
 
     game.map=SCN.args[1]
 
@@ -212,7 +225,11 @@ function scene.load()
     game.hitOffests={}
     game.curAcc,game.fullAcc=0,0
     _updateAcc()
-    game.healthUpLimit,game.health,game.healthDrain=100,100,10
+
+    game.healthUpLimit,game.health=100,100
+    game.healthLoss=(game.hpNoMiss and 1e99) or (game.hpAcc and 50) or 10
+    game.healthFatalis=game.hpFatal and 60 or 0
+
     game.combo,game.maxCombo,game.score,game.score0=0,0,0,0
     game.hitCount,game.totalDeviateTime=0,0
     for i=-1,5 do game.hits[i]=0 end
@@ -343,12 +360,13 @@ local function _trigNote(deviateTime,noTailHold,weak)
     if noTailHold and (game.hitLV>0 or game.hitLV==0 and weak) then game.hitLV=5 end
     game.bestChain=min(game.bestChain,game.hitLV)
     game.hits[game.hitLV]=game.hits[game.hitLV]+1
-    game.health=game.health+((game.hitLV==0 and 0) or game.healthGain[game.hitLV])
+
+    game.health=game.health+((game.hitLV==0 and (game.hpAcc and -25) or 0) or (game.hitLV>0 and game.healthGain[game.hitLV])) -- Health Stuff
     
 
     if game.hitLV>0 then
         game.curAcc=game.curAcc+game.accPoints[game.hitLV]
-        game.score0=game.score0+floor(game.hitLV*(10000+game.combo)^.5)
+        game.score0=game.score0+floor(game.hitLV*(10000+game.combo)^.5) 
         game.combo=game.combo+1
         if game.combo>game.maxCombo then game.maxCombo=game.combo end
         if not noTailHold then
@@ -664,7 +682,7 @@ function scene.update(dt)
             game.hitLV=-1
             game.fullAcc=game.fullAcc+100*missCount
             _updateAcc()
-            game.health=game.health-game.healthDrain
+            if not game.gaugeN then game.health=game.health-game.healthLoss end
             if game.combo>=10 then SFX.play('combobreak') end
             game.combo=0
             game.bestChain=0
@@ -675,6 +693,8 @@ function scene.update(dt)
 
     -- Gauge Limits
     if game.health<0 then 
+        game.health=0
+    elseif game.health<game.healthFatalis then
         game.health=0
     elseif game.health>game.healthUpLimit then
         game.health=game.healthUpLimit
@@ -775,8 +795,22 @@ function scene.draw()
     end
 
     -- Draw health gauge
-    gc_setColor(1,.5,.5)
-    gc_rectangle('fill', -110, 30, 2.2*game.health, 6)
+    if not game.gaugeN then
+        if game.gaugeC then -- Set Clear Gauge's Color
+            gc_setColor(.5,.8,.8)
+        else
+            if game.hpAcc then -- If Hex Gauge, change to light purple.
+                gc_setColor(.8,.5,.8)
+            else
+                gc_setColor(1,.5,.5)
+            end
+        end
+        gc_rectangle('fill', -110, 60, 2.2*game.health, 6)
+        if game.hpFatal then -- If Fatalis Gauge, create HP minimum overlay
+            gc_setColor(.7,.5,.5)
+            gc_rectangle('fill', -110, 60, 2.2*game.healthFatalis, 6)
+        end
+    end
 
     -- Draw time
     if game.time>0 then

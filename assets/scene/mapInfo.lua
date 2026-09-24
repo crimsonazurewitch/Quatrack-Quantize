@@ -150,6 +150,18 @@ end
 
 scene.widgetList={
     listBox,
+    WIDGET.new {
+        name = 'hex', type = 'checkBox',
+        pos={0.5,1},
+        x=0,y=-80,w=80,
+        color = { .5, .5, .5, 1 },
+        fillColor = dP,
+        disp = function() return hpAcc end,
+        code = function()
+            hpAcc = not hpAcc
+        end,
+    },
+
     WIDGET.new{
         type='button_fill',
         pos={1,1},
