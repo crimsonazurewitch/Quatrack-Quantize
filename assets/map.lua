@@ -68,6 +68,24 @@ function Map.new(file)
         return setmetatable(o,{__index=Map})
     end
 
+    -- Evaluate string
+    -- Why did Big Z not add this
+    local function eval(str)
+        -- is this straight up a number
+        local num=tonumber(str)
+            if num then return num end
+        -- is this a formula
+        local func, err = load("return " .. str, nil, "t", {})
+            if func then
+                local success, result = pcall(func)
+                    if success and type(result) == "number" then
+                    return result
+                    else error("Runtime evaluation error: " .. tostring(result))
+                end
+            else error("Invalid expression: " .. tostring(err))
+        end
+    end
+
     -- Read file
     local fileData={} do
         local lineNum=1
@@ -117,10 +135,10 @@ function Map.new(file)
         _syntaxCheck(#o.songImage>0,"Invalid $songImage")
     end
 
-    if type(o.tracks)=='string' then o.tracks=tonumber(o.tracks) end
+    if type(o.tracks)=='string' then o.tracks=eval(o.tracks) end
     _syntaxCheck(o.tracks,"Invalid $tracks value (need number)")
     if o.realTracks then
-        if type(o.realTracks)=='string' then o.realTracks=tonumber(o.realTracks) end
+        if type(o.realTracks)=='string' then o.realTracks=eval(o.realTracks) end
         _syntaxCheck(o.realTracks,"Invalid $realTracks value (need number)")
     end
 

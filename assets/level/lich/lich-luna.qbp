@@ -6,11 +6,11 @@ $mapDifficulty=LUNA-1
 $songFile=lich.ogg
 $songOffset=-90ms
 $songImage=lich.jpg
-$tracks=4
-$realTracks=4
+$tracks=4+2
+$realTracks=6
 
-----
-OOOO
-----
+------
+OOOOOO
+------
 
 >start
