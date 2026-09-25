@@ -54,14 +54,14 @@ local game={
     healthUpLimit=nil, -- Default maximum HP cap
     healthFatalis=nil, -- Default minimum HP cap 
 
-    gaugeN=true, -- No Gauge
+    gaugeN=false, -- No Gauge
     gaugeC=false, -- Clear (Not Implemented)
-    gaugeS=false, -- Standard
+    gaugeS=true, -- Standard
 
     hpDrain=false, -- Drain (Not Implemented)
     hpFatal=false, -- "Fatalis" (Extremely Bare)
     hpNoMiss=false, -- One Shot
-    hpAcc=false, -- Hex (Acc) (Broken)
+    hpAcc=true, -- Hex (Acc)
     hpOver=false, -- Overcast (Not Implemented)
 
 
@@ -361,8 +361,7 @@ local function _trigNote(deviateTime,noTailHold,weak)
     game.bestChain=min(game.bestChain,game.hitLV)
     game.hits[game.hitLV]=game.hits[game.hitLV]+1
 
-    game.health=game.health+((game.hitLV==0 and (game.hpAcc and -25) or 0) or (game.hitLV>0 and game.healthGain[game.hitLV])) -- Health Stuff
-    
+    game.health=game.health+((game.hitLV==0 and (game.hpAcc and -25 or 0)) or (game.hitLV>0 and game.healthGain[game.hitLV])) -- Health Stuff
 
     if game.hitLV>0 then
         game.curAcc=game.curAcc+game.accPoints[game.hitLV]

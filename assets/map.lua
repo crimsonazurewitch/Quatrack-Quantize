@@ -766,15 +766,15 @@ function Map.new(file)
                 }
             elseif code=='set_heal' then-- Set gauge heal
                 local t=str:split(',')
-                _syntaxCheck(#t==6,"Value Err")
-                for i=1,6 do
+                _syntaxCheck(#t==5,"Value Err")
+                for i=1,5 do
                     t[i]=tonumber(t[i])
                     _syntaxCheck(t[i] and t[i]%1==0,"Int Err")
                 end
-                for i=1,5 do
+                for i=1,4 do
                     _syntaxCheck(t[i]>=t[i+1],"Descend Err")
                 end
-                t[1],t[2],t[3],t[4],t[5],t[6]=t[6],t[5],t[4],t[3],t[2],t[1]
+                t[1],t[2],t[3],t[4],t[5]=t[5],t[4],t[3],t[2],t[1]
                 o.eventQueue:insert{
                     type='setHeal',
                     time=curTime,

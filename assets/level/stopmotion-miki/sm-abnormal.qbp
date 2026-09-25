@@ -135,7 +135,7 @@ U---
 
 # Intermission - Judgement Restoration
 # Note: Quatrack QUANTIZE judgements are used.
-/set_heal:0,0,-1,-5,-10,-50
+/set_heal:0,-1,-5,-10,-50
 ----*2
 /set_judge:20ms,40ms,80ms,120ms,160ms
 ----
