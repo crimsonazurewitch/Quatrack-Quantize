@@ -37,6 +37,7 @@ local game={
 
     playSongTime=nil,
     songLength=nil,
+    songLengthPercent=nil,
     playSpeed=nil,
 
     map=nil,-- Map object
@@ -61,8 +62,10 @@ local game={
     hpDrain=false, -- Drain (Not Implemented)
     hpFatal=false, -- "Fatalis" (Extremely Bare)
     hpNoMiss=false, -- One Shot
-    hpAcc=true, -- Hex (Acc)
-    hpOver=false, -- Overcast (Not Implemented)
+    hpAcc=false, -- Hex (Acc)
+    hpOver=true, -- Overcast (partly Implemented, broken)
+
+    hasOvercasted=false,
 
 
     safeAreaTimer=nil,
@@ -202,11 +205,11 @@ function scene.load()
     KEY_MAP_inv:_update()
     game.autoPlay=false
     game.playSpeed=1
-    if not autoPlayTextObj then autoPlayTextObj=gc.newText(FONT.get(100),'AUTO') end
+    if not autoPlayTextObj then autoPlayTextObj=gc.newText(FONT.get(100),'LARP') end
 
     game.judgeTimes={.16,.12,.08,.04,.02,0}
     game.accPoints={0,5,75,100,101}
-    game.healthGain=(game.hpAcc and {-10,-5,-1,0,2}) or {0,0,0.5,1,2}
+    game.healthGain=(game.hpAcc and {-10,-5,-1,0,2}) or (game.hpOver and {0,0,0.25,0.5,1}) or {0,0,0.5,1,2}
 
     game.map=SCN.args[1]
 
@@ -226,9 +229,19 @@ function scene.load()
     game.curAcc,game.fullAcc=0,0
     _updateAcc()
 
-    game.healthUpLimit,game.health=100,100
+    game.healthUpLimit=(game.hpOver and 200) or 100
+    game.health=(game.hpOver and 150) or 100
     game.healthLoss=(game.hpNoMiss and 1e99) or (game.hpAcc and 50) or 10
-    game.healthFatalis=game.hpFatal and 60 or 0
+    game.healthFatalis=(game.hpFatal and 60) or 0
+
+    -- Hey. Let's Overcast
+    if game.hpOver then
+        game.songLengthPercent = game.time / game.songLength
+        if game.songLengthPercent >= 0.66 and not game.hasOvercasted then
+            game.health = game.health * 0.66
+            game.hasOvercasted = true
+        end
+    end
 
     game.combo,game.maxCombo,game.score,game.score0=0,0,0,0
     game.hitCount,game.totalDeviateTime=0,0
